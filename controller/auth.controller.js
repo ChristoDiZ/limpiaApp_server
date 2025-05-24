@@ -1,5 +1,7 @@
 const User=require('../models/user.model.js')
-const bycriptjs=require('bcryptjs')
+const bcrypt = require('bcryptjs'); // ✅ asegúrate de que sea "bcrypt", no "bcryptjs"
+
+
 //register
 async function register(req,res) {
     //obtener los datos
@@ -18,12 +20,19 @@ async function register(req,res) {
         active:false
     })
     //encriptar password
-    user.password=bycriptjs.hashSync(password,10)
+    user.password=bcrypt.hashSync(password,10)
     console.log(user)
     //guardar en la db
     try{
         await user.save()
-        res.status(201).send({msg:"usuario guardado"})
+        res.status(201).send({
+  msg: "usuario guardado",
+  user: {
+    firstname: user.firstname,
+    email: user.email
+  }
+});
+
     }catch(error){
         res.status(500).send({msg:"Error al crear el usuario ❌"})
         console.log(error)
@@ -33,7 +42,33 @@ async function register(req,res) {
     res.status(200).send({msg:"todo ok"})
 }
 //login
+async function login(req, res) {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).send({ msg: "Email y contraseña son obligatorios" });
+  }
+
+  try {
+    const user = await User.findOne({ email: email.toLowerCase() });
+    if (!user) return res.status(404).send({ msg: "Usuario no encontrado" });
+
+    const passwordMatch = bcrypt.compareSync(password, user.password);
+    if (!passwordMatch) return res.status(401).send({ msg: "Contraseña incorrecta" });
+
+    res.status(200).send({
+      msg: "Login exitoso",
+      user: {
+        firstname: user.firstname,
+        email: user.email,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ msg: "Error del servidor" });
+  }
+}
 
 module.exports={
-    register,
+    register,login
 }

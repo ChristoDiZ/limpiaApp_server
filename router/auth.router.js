@@ -5,6 +5,8 @@ const AuthController=require('../controller/auth.controller.js')
 
 //mis rutas
 router.post('/auth/register',AuthController.register)
+router.post('/auth/login', AuthController.login);
+
 
 module.exports=router
 
