@@ -17,7 +17,9 @@ app.use(bodyParser.json())
 //configurar static folder
 app.use(express.static('uploads'))
 //importar rutas
-
+const authRoutes=require('./router/auth.router')
 //configurar rutas
+app.use('/api',authRoutes)
+
 
 module.exports=app
