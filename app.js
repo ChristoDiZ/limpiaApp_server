@@ -1,25 +1,26 @@
-const connectDB = require('./config/db.js')
-const express =require('express')
-const bodyParser=require('body-parser')
-const cors=require('cors')
+const connectDB = require('./config/db.js');
+const express = require('express');
+const bodyParser = require('body-parser');
+const cors = require('cors');
 
-//crear un servidor con express
-const app= express()
+// Crear un servidor con express
+const app = express();
 
-//conexion a base de datos
-connectDB()
+// Conexión a base de datos
+connectDB();
 
-//configurar cors
-app.use(cors())
-//configurar bodyparser
-app.use(bodyParser.urlencoded({extended:true}))
-app.use(bodyParser.json())
-//configurar static folder
-app.use(express.static('uploads'))
-//importar rutas
-const authRoutes=require('./router/auth.router')
-//configurar rutas
-app.use('/api',authRoutes)
+// Configurar middlewares
+app.use(cors());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(express.static('uploads'));
 
+// Importar rutas
+const authRoutes = require('./router/auth.router');
+const solicitudRoutes = require('./router/solicitud.router'); // ✅ NUEVA
 
-module.exports=app
+// Configurar rutas
+app.use('/api', authRoutes);
+app.use('/api/solicitudes', solicitudRoutes); // ✅ NUEVA
+
+module.exports = app;
