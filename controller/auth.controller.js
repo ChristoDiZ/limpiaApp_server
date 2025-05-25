@@ -1,51 +1,52 @@
-const User=require('../models/user.model.js')
-const bcrypt = require('bcryptjs'); // ✅ asegúrate de que sea "bcrypt", no "bcryptjs"
+const User = require('../models/user.model.js');
+const bcrypt = require('bcryptjs');
 const jwt = require("jsonwebtoken");
 
+// REGISTER
+async function register(req, res) {
+  const { firstname, lastname, email, password, role } = req.body;
 
-//register
-async function register(req,res) {
-    //obtener los datos
-    const { firstname, lastname, email, password, role } = req.body;
+  if (!email) return res.status(400).send({ msg: "El email es obligatorio ❌" });
+  if (!password) return res.status(400).send({ msg: "La contraseña es obligatoria ❌" });
 
-
-    //validar los datos
-    if(!email)return res.status(400).send({msg:"El email es obligatorio ❌"})
-    if(!password)return res.status(400).send({msg:"La contraseña es obligatorio ❌"})
-    
-    //crear el usuario
+  try {
+    // Crear el usuario
     const user = new User({
       firstname: firstname.toLowerCase(),
       lastname: lastname.toLowerCase(),
       email: email.toLowerCase(),
       password: bcrypt.hashSync(password, 10),
       active: false,
-      role // ✅ se guarda correctamente como "usuario" o "limpiador"
+      role,
     });
-    
-    //encriptar password
-    user.password=bcrypt.hashSync(password,10)
-    console.log(user)
-    //guardar en la db
-    try{
-        await user.save()
-        res.status(201).send({
-  msg: "usuario guardado",
-  user: {
-    firstname: user.firstname,
-    email: user.email
+
+    await user.save();
+
+    // 🔐 Generar token tras registro
+    const token = jwt.sign(
+  { id: user._id, role: user.role },
+  process.env.JWT_SECRET, // 👈 debe coincidir con tu .env
+  { expiresIn: "2h" }
+);
+
+
+    res.status(201).send({
+      msg: "Usuario registrado correctamente",
+      token,
+      user: {
+        id: user._id,
+        firstname: user.firstname,
+        email: user.email,
+        role: user.role
+      }
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ msg: "Error al crear el usuario ❌" });
   }
-});
-
-    }catch(error){
-        res.status(500).send({msg:"Error al crear el usuario ❌"})
-        console.log(error)
-    }   
-
-
-    res.status(200).send({msg:"todo ok"})
 }
-//login
+
+// LOGIN
 async function login(req, res) {
   const { email, password, role } = req.body;
 
@@ -64,14 +65,12 @@ async function login(req, res) {
     const passwordMatch = bcrypt.compareSync(password, user.password);
     if (!passwordMatch) return res.status(401).send({ msg: "Contraseña incorrecta" });
 
-    // ✅ Generar token
     const token = jwt.sign(
       { id: user._id, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: "2h" }
     );
 
-    // ✅ Enviar token y datos del usuario al frontend
     res.status(200).send({
       msg: "Login exitoso",
       token,
@@ -88,7 +87,7 @@ async function login(req, res) {
   }
 }
 
-
-module.exports={
-    register,login
-}
+module.exports = {
+  register,
+  login
+};
