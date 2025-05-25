@@ -20,7 +20,12 @@ const authRoutes = require('./router/auth.router');
 const solicitudRoutes = require('./router/solicitud.router'); // ✅ NUEVA
 
 // Configurar rutas
-app.use('/api', authRoutes);
+app.use('/api/auth', authRoutes);
 app.use('/api/solicitudes', solicitudRoutes); // ✅ NUEVA
+
+app.get("/", (req, res) => {
+  res.send("🚀 Backend de LimpiApp funcionando");
+});
+
 
 module.exports = app;
