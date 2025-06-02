@@ -15,6 +15,12 @@ app.use(cors({
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
+app.options('*', cors({
+  origin: "https://limpi.netlify.app",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
+
 
 // Middlewares adicionales
 app.use(bodyParser.urlencoded({ extended: true }));
