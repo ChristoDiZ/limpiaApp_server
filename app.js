@@ -9,17 +9,12 @@ const app = express();
 // Conexión a base de datos
 connectDB();
 
-const corsOptions = {
-  origin: "https://limpi.netlify.app",
+// Configurar CORS para permitir solicitudes desde Netlify
+app.use(cors({
+  origin: "https://limpi.netlify.app", // reemplaza con tu dominio real si usas otro personalizado
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
-};
-
-app.use(cors(corsOptions)); // aplica CORS a todo
-
-// Esto maneja explícitamente solicitudes OPTIONS para evitar errores preflight
-app.options('*', cors(corsOptions));
-
+}));
 
 
 // Middlewares adicionales
