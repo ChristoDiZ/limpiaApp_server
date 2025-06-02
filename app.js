@@ -9,23 +9,28 @@ const app = express();
 // Conexión a base de datos
 connectDB();
 
-// Configurar middlewares
-app.use(cors());
+// Configurar CORS para permitir solicitudes desde Netlify
+app.use(cors({
+  origin: "https://limpi.netlify.app", // reemplaza con tu dominio real si usas otro personalizado
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
+
+// Middlewares adicionales
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static('uploads'));
 
 // Importar rutas
 const authRoutes = require('./router/auth.router');
-const solicitudRoutes = require('./router/solicitud.router'); // ✅ NUEVA
+const solicitudRoutes = require('./router/solicitud.router');
 
 // Configurar rutas
 app.use('/api/auth', authRoutes);
-app.use('/api/solicitudes', solicitudRoutes); // ✅ NUEVA
+app.use('/api/solicitudes', solicitudRoutes);
 
 app.get("/", (req, res) => {
   res.send("🚀 Backend de LimpiApp funcionando");
 });
-
 
 module.exports = app;
