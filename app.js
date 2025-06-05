@@ -9,7 +9,7 @@ connectDB();
 
 // ✅ CORS manual para evitar errores con Railway (preflight + POST real)
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "https://frontend-production-aa88.up.railway.app"); // 👈 tu dominio frontend real
+  res.header("Access-Control-Allow-Origin", "https://frontend-production-8b53.up.railway.app/"); // 👈 tu dominio frontend real
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
   res.header("Access-Control-Allow-Credentials", "true");
