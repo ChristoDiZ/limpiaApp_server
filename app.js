@@ -11,7 +11,7 @@ connectDB();
 
 // Configurar CORS para permitir solicitudes desde Netlify
 app.use(cors({
-  origin: "https://limpi.netlify.app", // reemplaza con tu dominio real si usas otro personalizado
+  origin: "https://frontend-production-aa88.up.railway.app/", // reemplaza con tu dominio real si usas otro personalizado
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
