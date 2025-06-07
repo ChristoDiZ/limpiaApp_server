@@ -8,12 +8,16 @@ const app = express();
 // Conexión a BD
 connectDB();
 
-// ✅ Configuración CORS
+// ✅ Aplica CORS a TODAS las rutas
 app.use(cors({
   origin: 'https://frontend-production-8b53.up.railway.app',
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
 }));
+
+// ✅ Habilita respuesta automática a las preflight requests
+app.options('*', cors());
 
 // Middlewares
 app.use(bodyParser.urlencoded({ extended: true }));
