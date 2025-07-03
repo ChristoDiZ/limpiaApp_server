@@ -7,9 +7,9 @@ const app = express();
 // Conexión a base de datos
 connectDB();
 
-// ✅ CORS manual para evitar errores con Railway (preflight + POST real)
+// ✅ CORS manual para evitar errores con el frontend local
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "http://localhost:3000"); // 👈 tu dominio frontend real
+  res.header("Access-Control-Allow-Origin", "http://localhost:3000"); // o 5173 si usas Vite
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
   res.header("Access-Control-Allow-Credentials", "true");
@@ -21,7 +21,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// Middlewares adicionales
+// Middlewares
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static('uploads'));
@@ -30,11 +30,11 @@ app.use(express.static('uploads'));
 const authRoutes = require('./router/auth.router');
 const solicitudRoutes = require('./router/solicitud.router');
 
-// Configurar rutas
+// Montar rutas
 app.use('/api/auth', authRoutes);
 app.use('/api/solicitudes', solicitudRoutes);
 
-// Ruta raíz
+// Ruta raíz de prueba
 app.get("/", (req, res) => {
   res.send("🚀 Backend de LimpiApp funcionando");
 });
