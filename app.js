@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 
 const app = express();
 
-// Conexión a base de datos
+// Conexión a base de datoss
 connectDB();
 
 // ✅ CORS manual para evitar errores con el frontend local
