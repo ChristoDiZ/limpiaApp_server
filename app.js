@@ -4,17 +4,22 @@ const bodyParser = require('body-parser');
 
 const app = express();
 
-// Conexión a base de datoss
+// Conexión a base de datos
 connectDB();
 
-// ✅ CORS manual para evitar errores con el frontend local
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "http://localhost:3000"); // o 5173 si usas Vite
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  res.header("Access-Control-Allow-Credentials", "true");
+// ✅ CORS mejorado: permitir múltiples orígenes (React, Vite)
+const allowedOrigins = ['http://localhost:3000', 'http://localhost:5173'];
 
-  if (req.method === "OPTIONS") {
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.header('Access-Control-Allow-Credentials', 'true');
+
+  if (req.method === 'OPTIONS') {
     return res.sendStatus(204); // Preflight success
   }
 
@@ -35,8 +40,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/solicitudes', solicitudRoutes);
 
 // Ruta raíz de prueba
-app.get("/", (req, res) => {
-  res.send("🚀 Backend de LimpiApp funcionando");
+app.get('/', (req, res) => {
+  res.send('🚀 Backend de LimpiApp funcionando');
 });
 
 module.exports = app;
